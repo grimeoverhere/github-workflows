@@ -1,0 +1,54 @@
+name: Build and deploy project
+
+on:
+  workflow_call:
+    inputs:
+      server_user:
+        description: 'Username in the server'
+        type: string
+        required: false
+        default: 'alex'
+      package_name:
+        description: 'Name of generated package'
+        type: string
+        required: false
+        default: 'teledone-0.0.1-SNAPSHOT.jar'
+      java_version:
+        description: 'Version of JDK'
+        type: string
+        required: false
+        default: '17'
+
+
+env:
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CREATOR_ID: ${{ secrets.TELEGRAM_CREATOR_ID }}
+  TELEGRAM_BOT_USERNAME: ${{ secrets.TELEGRAM_BOT_USERNAME }}
+  VK_APP_ID: ${{ secrets.VK_APP_ID }}
+  VK_CLIENT_SECRET: ${{ secrets.VK_CLIENT_SECRET }}
+  VK_SERVICE_ACCESS_KEY: ${{ secrets.VK_SERVICE_ACCESS_KEY }}
+  GPT_TOKEN: ${{ secrets.GPT_TOKEN }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.java_version }}
+          distribution: 'temurin'
+      - name: Build JAR
+        run: mvn -B package --file pom.xml
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - name: Deploy JAR with rsync
+        run: rsync -avz ./target/${{ inputs.package_name }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/${{ inputs.server_user }}/tmp/

@@ -10,7 +10,6 @@ on:
         default: '17'
 
 env:
-  SERVER_PORT: ${{ secrets.SERVER_PORT }}
   TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
   TELEGRAM_CREATOR_ID: ${{ secrets.TELEGRAM_CREATOR_ID }}
   TELEGRAM_BOT_USERNAME: ${{ secrets.TELEGRAM_BOT_USERNAME }}
