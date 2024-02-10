@@ -11,6 +11,13 @@ on:
 
 env:
   SERVER_PORT: ${{ secrets.SERVER_PORT }}
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CREATOR_ID: ${{ secrets.TELEGRAM_CREATOR_ID }}
+  TELEGRAM_BOT_USERNAME: ${{ secrets.TELEGRAM_BOT_USERNAME }}
+  VK_APP_ID: ${{ secrets.VK_APP_ID }}
+  VK_CLIENT_SECRET: ${{ secrets.VK_CLIENT_SECRET }}
+  VK_SERVICE_ACCESS_KEY: ${{ secrets.VK_SERVICE_ACCESS_KEY }}
+  GPT_TOKEN: ${{ secrets.GPT_TOKEN }}
 
 jobs:
   build:
